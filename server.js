@@ -44,7 +44,7 @@ app.get("/exercise", (req, res) => {
     API Routes
 ================================================================*/
 app.get("/api/workouts", async function (req, res) {
-  const data =  await db.Workout.find({day:{$gte: new Date().setDate(new Date().getDate()-7) }});
+  const data =  await db.Workout.find();
   return res.json(data);
 })
 
@@ -66,11 +66,18 @@ app.post("/api/workouts", async function (req, res) {
 
 app.get("/api/workouts/range", async function (req, res){
   try{
-    const data =  await db.Workout.find();
+    var prevSun = new Date()
+    prevSun.setHours(0,0,0,0);
+    prevSun.setDate(prevSun.getDate() - (prevSun.getDay()) % 7);
+    console.log(prevSun);
+
+    const data =  await db.Workout.find(
+      {day:{$gte: prevSun }}
+    );
     return res.json(data);
   }
   catch(err){
-    console.log("ERROR ADDING TO DATABASE!");
+    console.log("ERROR Reading FROM DATABASE!");
     return res.status(500);
   }
 })
