@@ -65,28 +65,46 @@ app.post("/api/workouts", async function (req, res) {
 })
 
 app.get("/api/workouts/range", async function (req, res){
-  const data =  await db.Workout.find();
-  return res.json(data);
+  try{
+    const data =  await db.Workout.find();
+    return res.json(data);
+  }
+  catch(err){
+    console.log("ERROR ADDING TO DATABASE!");
+    return res.status(500);
+  }
 })
 
 app.get("/api/workouts/:id", async function (req, res) {
-  return await db.Workout.find({_id:req.params.id});
+  try {
+    return await db.Workout.find({_id:req.params.id});
+  }
+  catch(err){
+    console.log("ERROR ADDING TO DATABASE!");
+    return res.status(500);
+  }
 })
 
 app.put("/api/workouts/:id", async function (req, res) {
-  console.log(req.body);
-  //const exer = await db.Exercise.create(req.body);
-  //exer => db.Library.findOneAndUpdate({}, { $push: { books: _id } }, { new: true })
-  const data = await db.Workout.findByIdAndUpdate(
-    req.params.id,
-    {
-      $inc:
-        {"totalDuration":req.body.duration},
-      $push:
-        {"exercises": req.body}
-    })
-  //console.log(data);
-  return res.json(data);
+  try{
+    console.log(req.body);
+    //const exer = await db.Exercise.create(req.body);
+    //exer => db.Library.findOneAndUpdate({}, { $push: { books: _id } }, { new: true })
+    const data = await db.Workout.findByIdAndUpdate(
+      req.params.id,
+      {
+        $inc:
+          {"totalDuration":req.body.duration},
+        $push:
+          {"exercises": req.body}
+      })
+    //console.log(data);
+    return res.json(data);
+  }
+  catch(err){
+    console.log("ERROR ADDING TO DATABASE!");
+    return res.status(500);
+  }
 })
 
 /*==============================================================
